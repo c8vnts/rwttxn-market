@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rwttxn Market</title>
+  <style>
+
+    :root {
+      --bg: #030504;
+      --panel: rgba(8, 12, 10, 0.84);
+      --panel-solid: #080c0a;
+      --green: #00ff88;
+      --green-2: #00c46b;
+      --text: #ffffff;
+      --muted: #a7b4ad;
+      --line: rgba(0, 255, 136, 0.22);
+      --shadow: 0 24px 80px rgba(0, 255, 136, 0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Inter, Arial, sans-serif; scroll-behavior: smooth; }
+    body {
+      background:
+        radial-gradient(circle at 10% 10%, rgba(0,255,136,.15), transparent 30%),
+        radial-gradient(circle at 90% 15%, rgba(0,196,107,.11), transparent 28%),
+        linear-gradient(180deg, #020403, #050807 48%, #020403);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 42px 42px;
+      pointer-events: none;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+
+    header {
+      padding: 14px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(3, 5, 4, .74);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      animation: slideDown .7s ease both;
+    }
+
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 16px rgba(0,255,136,.7));
+      animation: logoFloat 4s ease-in-out infinite;
+    }
+
+    .brand h1 { font-size: 27px; letter-spacing: -.5px; }
+    .brand span { color: var(--green); font-size: 12px; letter-spacing: 2.2px; font-weight: 900; }
+
+    nav { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 13px;
+      transition: .25s ease;
+      border: 1px solid transparent;
+    }
+    nav a:hover {
+      color: var(--green);
+      border-color: var(--line);
+      background: rgba(0,255,136,.08);
+      transform: translateY(-2px);
+    }
+    #cartCount {
+      background: var(--green);
+      color: #001b0f;
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-left: 4px;
+    }
+
+    .hero {
+      padding: 82px 7% 50px;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 42px;
+      align-items: center;
+    }
+    .hero > div:first-child { animation: fadeUp .75s ease both; }
+    .hero h2 {
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: .98;
+      letter-spacing: -2px;
+      margin-bottom: 18px;
+    }
+    .hero h2 span {
+      color: var(--green);
+      text-shadow: 0 0 28px rgba(0,255,136,.45);
+    }
+    .hero p {
+      color: #d4ded8;
+      font-size: 18px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+      max-width: 680px;
+    }
+    .hero .btn { margin-right: 10px; margin-bottom: 10px; }
+
+    .hero-logo {
+      position: relative;
+      background: linear-gradient(145deg, rgba(0,255,136,.12), rgba(255,255,255,.03));
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      padding: 28px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: fadeScale .8s ease .1s both;
+    }
+    .hero-logo::before {
+      content: "";
+      position: absolute;
+      inset: -60px;
+      background: conic-gradient(from 180deg, transparent, rgba(0,255,136,.24), transparent 35%);
+      animation: spin 9s linear infinite;
+    }
+    .hero-logo img {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      filter: drop-shadow(0 0 22px rgba(0,255,136,.65));
+      animation: logoFloat 4s ease-in-out infinite;
+    }
+
+    .btn {
+      border: none;
+      padding: 14px 22px;
+      border-radius: 15px;
+      font-weight: 950;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+      text-align: center;
+    }
+    .btn-main {
+      background: linear-gradient(135deg, var(--green), var(--green-2));
+      color: #001b0f;
+      box-shadow: 0 12px 30px rgba(0,255,136,.18);
+    }
+    .btn-dark {
+      background: rgba(16,21,18,.8);
+      color: white;
+      border: 1px solid var(--line);
+    }
+    .btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 18px 40px rgba(0,255,136,.26); filter: brightness(1.05); }
+    .btn:active { transform: translateY(0) scale(.98); }
+
+    section {
+      scroll-margin-top:120px;
+      padding: 52px 7%;
+      animation: fadeUp .7s ease both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+    .section-title { font-size: clamp(30px, 4vw, 44px); margin-bottom: 10px; letter-spacing: -.8px; }
+    .section-subtitle { color: var(--muted); margin-bottom: 25px; line-height: 1.6; }
+
+    .category-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 25px; }
+    .chip {
+      background: rgba(13,21,16,.84);
+      border: 1px solid var(--line);
+      color: #dfffee;
+      padding: 12px 17px;
+      border-radius: 999px;
+      font-weight: 950;
+      cursor: pointer;
+      transition: .22s ease;
+    }
+    .chip:hover, .chip.active {
+      background: var(--green);
+      color: #001b0f;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(0,255,136,.2);
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 22px;
+    }
+    .product, .box {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.22);
+      backdrop-filter: blur(12px);
+    }
+    .product {
+      position: relative;
+      overflow: hidden;
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+      animation: cardIn .55s ease both;
+    }
+    .product::before {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      top: -55px;
+      right: -55px;
+      background: rgba(0,255,136,.16);
+      filter: blur(32px);
+      transition: .25s ease;
+    }
+    .product:hover {
+      transform: translateY(-8px);
+      border-color: var(--green);
+      box-shadow: 0 24px 75px rgba(0,255,136,.16);
+    }
+    .product:hover::before { transform: scale(1.25); }
+
+    .badge {
+      display: inline-block;
+      background: rgba(20,24,39,.8);
+      border: 1px solid rgba(255,255,255,.13);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 950;
+      margin-bottom: 14px;
+      color: #e7fff3;
+    }
+    .emoji {
+      font-size: 43px;
+      margin-bottom: 13px;
+      background: linear-gradient(145deg, #073b2a, #0b1510);
+      width: 72px;
+      height: 72px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:21px;
+      border:1px solid var(--line);
+      box-shadow: inset 0 0 25px rgba(0,255,136,.08);
+      transition: .25s ease;
+    }
+    .product:hover .emoji { transform: rotate(-4deg) scale(1.08); }
+    .product h3 { font-size: 22px; margin-bottom: 9px; letter-spacing: -.3px; }
+    .product p { color: #dbeafe; font-size: 14px; line-height: 1.58; margin-bottom: 14px; }
+    .price { font-size: 23px; font-weight: 950; color: var(--green); margin-bottom: 8px; }
+    .fee-tag { color:var(--green); font-weight:950; margin-bottom:14px; font-size:14px; }
+    .product button {
+      width: 100%;
+      padding: 13px;
+      border-radius: 15px;
+      border: none;
+      background: linear-gradient(135deg, var(--green), var(--green-2));
+      color: #001b0f;
+      font-weight: 950;
+      cursor: pointer;
+      transition: .22s ease;
+    }
+    .product button:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,255,136,.18); }
+
+    input, textarea, select {
+      width: 100%;
+      margin-top: 12px;
+      padding: 15px;
+      border-radius: 15px;
+      border: 1px solid rgba(0,255,136,.22);
+      background: rgba(2,4,3,.78);
+      color: white;
+      outline: none;
+      transition: .2s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(0,255,136,.08);
+    }
+    textarea { min-height: 110px; resize: vertical; }
+    #cartItems { color: #d1d5db; margin: 15px 0; line-height: 1.9; }
+    .total { color: var(--green); font-weight: 950; font-size: 22px; }
+    .checkout-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+    .mini-note { color:var(--green); font-weight:950; margin-top:10px; }
+    .pay-grid, .reviews { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 18px; }
+    .pay-card, .review {
+      background: rgba(13,21,16,.86);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 19px;
+      transition: .23s ease;
+    }
+    .pay-card { text-align: center; }
+    .pay-card:hover, .review:hover { transform: translateY(-5px); border-color: var(--green); box-shadow: 0 20px 50px rgba(0,255,136,.12); }
+    .review p { color: #d1d5db; line-height: 1.55; }
+
+    .checkout-modal {
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.78);
+      z-index:50;
+      padding:25px;
+      overflow:auto;
+      backdrop-filter: blur(8px);
+      animation: fadeIn .22s ease both;
+    }
+    .checkout-panel {
+      max-width:780px;
+      margin:35px auto;
+      background: linear-gradient(145deg, rgba(8,12,10,.98), rgba(4,8,6,.98));
+      border:1px solid var(--green);
+      border-radius:30px;
+      padding:26px;
+      box-shadow:0 0 60px rgba(0,255,136,.20);
+      animation: modalIn .32s ease both;
+    }
+    .checkout-top { display:flex; justify-content:space-between; align-items:center; gap:15px; margin-bottom:15px; }
+    .close-btn {
+      background:#151515;
+      color:white;
+      border:1px solid #444;
+      border-radius:14px;
+      padding:11px 15px;
+      cursor:pointer;
+      font-weight:950;
+      transition:.2s ease;
+    }
+    .close-btn:hover { border-color: var(--green); color: var(--green); }
+    .checkout-list {
+      background:#020403;
+      border:1px solid rgba(0,255,136,.18);
+      border-radius:18px;
+      padding:16px;
+      color:#d1d5db;
+      line-height:1.9;
+      margin:14px 0;
+    }
+
+    footer { text-align: center; padding: 38px; color: #7b8982; border-top: 1px solid var(--line); margin-top: 35px; }
+
+    @keyframes slideDown { from { opacity:0; transform:translateY(-18px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeScale { from { opacity:0; transform:scale(.94); } to { opacity:1; transform:scale(1); } }
+    @keyframes cardIn { from { opacity:0; transform:translateY(14px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes logoFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-9px); } }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes modalIn { from { opacity:0; transform:translateY(20px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding-top: 52px; }
+      nav { display: none; }
+      .brand img { width: 58px; height: 58px; }
+      .hero h2 { letter-spacing: -1px; }
+    }
+
+  
+    .market-nav {
+      background: rgba(8, 11, 23, .78);
+      padding: 12px 18px;
+      border-radius: 18px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid rgba(157, 124, 255, .18);
+      box-shadow: 0 12px 35px rgba(0,0,0,.18);
+    }
+
+    .market-nav a {
+      color: #cfd3ea;
+      text-decoration: none;
+      font-weight: 800;
+      transition: .22s ease;
+      padding: 8px 10px;
+      border-radius: 999px;
+    }
+
+    .market-nav a:hover {
+      color: #9d7cff;
+      background: rgba(157,124,255,.09);
+      transform: translateY(-2px);
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin: 10px 7% 35px;
+      padding: 0;
+      background: rgba(11, 15, 29, .88);
+      border: 1px solid rgba(157, 124, 255, .22);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(0,0,0,.25);
+      animation: fadeUp .75s ease both;
+    }
+
+    .stat-box {
+      padding: 34px 20px;
+      text-align: center;
+      border-right: 1px solid rgba(157, 124, 255, .16);
+    }
+
+    .stat-box:last-child { border-right: none; }
+
+    .stat-box h2 {
+      color: #9d7cff;
+      font-size: 34px;
+      text-shadow: 0 0 18px rgba(157,124,255,.45);
+    }
+
+    .stat-box p {
+      color: #8790ad;
+      margin-top: 10px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      font-weight: 800;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      padding-top: 10px;
+    }
+
+    .info-card h2 { margin-bottom: 10px; }
+    .info-card p { color: #d1d5db; line-height: 1.65; }
+
+    #cardCheckout {
+      background: linear-gradient(145deg, rgba(11,15,29,.98), rgba(8,12,20,.98)) !important;
+      color: white !important;
+      border: 1px solid rgba(157,124,255,.28) !important;
+      border-radius: 24px !important;
+      box-shadow: 0 22px 60px rgba(0,0,0,.28);
+    }
+
+    #cardCheckout input,
+    #cardCheckout select {
+      background: #13192c !important;
+      color: white !important;
+      border: 1px solid rgba(255,255,255,.12) !important;
+    }
+
+    #cardCheckout p,
+    #cardCheckout label {
+      color: #cfd3ea !important;
+    }
+
+    #cardCheckout > div {
+      background: #0f1424 !important;
+      border: 1px solid rgba(157,124,255,.2) !important;
+    }
+
+    @media (max-width: 800px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .stat-box:nth-child(2) { border-right: none; }
+    }
+
+  
+    .flash-sale {
+      margin: 18px 7% 0;
+      padding: 16px 20px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,100,0,.18), rgba(0,255,136,.12));
+      border: 1px solid rgba(255,170,0,.35);
+      color: #fff4d6;
+      font-weight: 950;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      box-shadow: 0 18px 45px rgba(255,100,0,.08);
+      animation: pulseGlow 2.2s ease-in-out infinite;
+    }
+
+    .flash-sale span { color: #00ff88; }
+
+    .discord-online {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .online-dot {
+      width: 9px;
+      height: 9px;
+      background: #00ff88;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #00ff88;
+      animation: blinkDot 1.4s ease-in-out infinite;
+    }
+
+    .review-counter {
+      background: rgba(13,21,16,.86);
+      border: 1px solid rgba(0,255,136,.22);
+      border-radius: 22px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 18px 55px rgba(0,0,0,.22);
+    }
+
+    .review-counter h3 {
+      font-size: 36px;
+      color: #00ff88;
+      margin-bottom: 6px;
+    }
+
+    .ticket-banner {
+      margin-top: 18px;
+      background: rgba(11,15,29,.88);
+      border: 1px solid rgba(157,124,255,.26);
+      border-radius: 24px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .recently-sold {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .sold-card {
+      background: rgba(13,21,16,.86);
+      border: 1px solid rgba(0,255,136,.18);
+      border-radius: 20px;
+      padding: 18px;
+      transition: .22s ease;
+    }
+
+    .sold-card:hover {
+      transform: translateY(-5px);
+      border-color: #00ff88;
+      box-shadow: 0 20px 50px rgba(0,255,136,.12);
+    }
+
+    .sold-card h3 { margin-bottom: 8px; }
+    .sold-card p { color: #a7b4ad; line-height: 1.5; }
+
+    .floating-sale {
+      position: fixed;
+      left: 22px;
+      bottom: 22px;
+      z-index: 80;
+      max-width: 330px;
+      background: rgba(8,12,10,.96);
+      border: 1px solid rgba(0,255,136,.35);
+      border-radius: 20px;
+      padding: 15px 17px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      animation: floatPop 8s ease-in-out infinite;
+    }
+
+    .floating-sale strong { color: #00ff88; }
+    .floating-sale p { color: #d1d5db; font-size: 14px; line-height: 1.45; }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 18px 45px rgba(255,100,0,.08); }
+      50% { box-shadow: 0 18px 55px rgba(255,170,0,.20); }
+    }
+
+    @keyframes blinkDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .55; transform: scale(.75); }
+    }
+
+    @keyframes floatPop {
+      0%, 8% { opacity: 0; transform: translateY(20px) scale(.96); }
+      14%, 75% { opacity: 1; transform: translateY(0) scale(1); }
+      85%, 100% { opacity: 0; transform: translateY(20px) scale(.96); }
+    }
+
+    @media (max-width: 700px) {
+      .flash-sale { flex-direction: column; align-items: flex-start; }
+      .floating-sale { left: 12px; right: 12px; max-width: none; }
+    }
+
+  
+    /* PREMIUM MODERN UPGRADE */
+    body {
+      cursor: default;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(0,255,136,.10), transparent 22%),
+        radial-gradient(circle at 50% 120%, rgba(0,255,136,.10), transparent 34%);
+      transition: background .08s linear;
+    }
+
+    header {
+      background: rgba(2, 8, 5, .72) !important;
+      box-shadow: 0 18px 60px rgba(0,0,0,.38);
+    }
+
+    .market-nav {
+      background: rgba(3, 16, 9, .72) !important;
+      border: 1px solid rgba(0,255,136,.22) !important;
+      box-shadow: inset 0 0 22px rgba(0,255,136,.04), 0 18px 45px rgba(0,0,0,.25) !important;
+    }
+
+    .market-nav a {
+      color: #eafff4 !important;
+    }
+
+    .market-nav a:hover {
+      color: #001b0f !important;
+      background: linear-gradient(135deg, var(--green), var(--green-2)) !important;
+      box-shadow: 0 10px 25px rgba(0,255,136,.22);
+    }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 35px 5%;
+      z-index: -1;
+      border-radius: 40px;
+      background:
+        linear-gradient(135deg, rgba(0,255,136,.10), transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(0,255,136,.16), transparent 35%);
+      border: 1px solid rgba(0,255,136,.12);
+      filter: blur(.1px);
+    }
+
+    .hero h2 {
+      text-shadow: 0 0 40px rgba(0,255,136,.14);
+    }
+
+    .hero-logo, .product, .box, .pay-card, .review, .sold-card, .checkout-panel {
+      background:
+        linear-gradient(145deg, rgba(10,20,15,.88), rgba(2,7,5,.88)) !important;
+      border: 1px solid rgba(0,255,136,.22) !important;
+      box-shadow:
+        0 24px 70px rgba(0,0,0,.34),
+        inset 0 1px 0 rgba(255,255,255,.05),
+        inset 0 0 35px rgba(0,255,136,.035) !important;
+    }
+
+    .product::after, .box::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,.05), transparent);
+      opacity: 0;
+      transform: translateX(-40%);
+      transition: .4s ease;
+    }
+
+    .product:hover::after, .box:hover::after {
+      opacity: 1;
+      transform: translateX(40%);
+    }
+
+    .product:hover, .pay-card:hover, .review:hover, .sold-card:hover {
+      transform: translateY(-10px) scale(1.015);
+      border-color: rgba(0,255,136,.65) !important;
+      box-shadow:
+        0 28px 90px rgba(0,255,136,.16),
+        0 18px 55px rgba(0,0,0,.42) !important;
+    }
+
+    .stats-bar {
+      background:
+        linear-gradient(135deg, rgba(0,255,136,.09), rgba(0,12,7,.96)) !important;
+      border: 1px solid rgba(0,255,136,.28) !important;
+      box-shadow:
+        0 28px 80px rgba(0,0,0,.35),
+        0 0 45px rgba(0,255,136,.10) !important;
+      position: relative;
+    }
+
+    .stats-bar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(0,255,136,.10), transparent);
+      animation: sweep 5s linear infinite;
+    }
+
+    .stat-box {
+      border-right: 1px solid rgba(0,255,136,.14) !important;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-box h2 {
+      color: var(--green) !important;
+      text-shadow: 0 0 18px rgba(0,255,136,.55) !important;
+    }
+
+    .stat-box p {
+      color: #c8ffe4 !important;
+    }
+
+    .badge {
+      background: rgba(0,255,136,.10) !important;
+      border: 1px solid rgba(0,255,136,.25) !important;
+      color: #dffff0 !important;
+    }
+
+    .section-title {
+      text-shadow: 0 0 25px rgba(0,255,136,.18);
+    }
+
+    .btn-main {
+      box-shadow:
+        0 12px 35px rgba(0,255,136,.23),
+        inset 0 1px 0 rgba(255,255,255,.35) !important;
+    }
+
+    .btn-dark {
+      background: rgba(4,13,8,.85) !important;
+      border: 1px solid rgba(0,255,136,.25) !important;
+    }
+
+    .premium-divider {
+      height: 1px;
+      margin: 0 7%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,136,.45), transparent);
+    }
+
+    @keyframes sweep {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(100%); }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="./logo.png" alt="Rwttxn Market Logo" />
+      <div>
+        <h1>Rwttxn Market</h1>
+        <span>FAST • TRUSTED • CHEAP</span>
+      </div>
+    </div>
+    <nav class="market-nav">
+      <a href="#shop">Browse</a>
+      <a href="#howtobuy">How to Buy</a>
+      <a href="#team">Meet The Team</a>
+      <a href="#safety">Trust & Safety</a>
+      <a href="#payment">Payments</a>
+      <a href="#recentlySold">Recently Sold</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#ticket">Open Ticket</a>
+      <a href="https://discord.gg/ffYGWywwY" target="_blank" class="discord-online"><span class="online-dot"></span> Discord</a>
+      <a href="#cart">Cart 🛒 <span id="cartCount">0</span></a>
+    </nav>
+  </header>
+
+
+  <div class="flash-sale">
+    <div>🔥 FLASH SALE: All prices include fees — limited stock available today!</div>
+    <a class="btn btn-main" href="#shop">Shop Deals</a>
+  </div>
+
+
+  <div class="premium-divider"></div>
+  <section style="padding-top:28px;padding-bottom:20px;">
+    <div class="products">
+      <div class="box"><h3>🛡️ Secure Ordering</h3><p class="section-subtitle" style="margin:8px 0 0;">Orders are confirmed through Discord tickets before delivery.</p></div>
+      <div class="box"><h3>⚡ Fast Support</h3><p class="section-subtitle" style="margin:8px 0 0;">Quick responses for stock checks, payments, and delivery help.</p></div>
+      <div class="box"><h3>💚 Premium Service</h3><p class="section-subtitle" style="margin:8px 0 0;">Clean checkout, clear pricing, and all fees included.</p></div>
+    </div>
+  </section>
+
+  <main>
+    <div class="hero">
+      <div>
+        <h2>Shop Roblox items with <span>Rwttxn Market</span></h2>
+        <p>MM2 bundles, Adopt Me pets, Dahood skins, DHC prices, and OG Roblox accounts. Join the Discord for support, restocks, and proof.</p>
+        <a href="#shop" class="btn btn-main">🛒 Shop Now</a>
+        <a href="https://discord.gg/ffYGWywwY" target="_blank" class="btn btn-dark">💬 Join Discord</a>
+      </div>
+      <div class="hero-logo"><img src="./logo.png" alt="Rwttxn Market Logo" /></div>
+    </div>
+
+
+    <section class="stats-bar">
+      <div class="stat-box">
+        <h2>500+</h2>
+        <p>DEALS DONE</p>
+      </div>
+      <div class="stat-box">
+        <h2>99%</h2>
+        <p>SATISFACTION</p>
+      </div>
+      <div class="stat-box">
+        <h2>24/7</h2>
+        <p>AVAILABLE</p>
+      </div>
+      <div class="stat-box">
+        <h2>0</h2>
+        <p>SCAM REPORTS</p>
+      </div>
+    </section>
+
+    <section id="howtobuy" class="info-grid">
+      <div class="box info-card">
+        <h2>🛒 How to Buy</h2>
+        <p>Pick your item, add it to cart, checkout, then send your order in Discord. All prices already include fees.</p>
+      </div>
+      <div class="box info-card" id="safety">
+        <h2>🛡️ Trust & Safety</h2>
+        <p>Join the Discord for proof, support, restocks, and order help. Open a ticket before buying accounts.</p>
+      </div>
+    </section>
+    
+<section id="team">
+<h2 class="section-title">👥 Meet The Team</h2>
+<p class="section-subtitle">
+Rwttxn Market is operated by a small, dedicated team focused on trusted service,
+quick responses, fair prices, and a professional buying experience.
+</p>
+
+<div class="products">
+<div class="product">
+<div class="emoji">👑</div>
+<span class="badge">Founder & CEO</span>
+<h3>Chloe</h3>
+<p><strong>Discord:</strong> @rwttxn</p>
+<p><strong>Business Email:</strong><br><span style="color:#00ff88">notvyloe@gmail.com</span></p>
+<p>Founder of Rwttxn Market. Chloe manages marketplace operations, customer experience, pricing, updates, partnerships, and overall business growth.</p>
+<a href="mailto:notvyloe@gmail.com" class="btn btn-dark">📧 Email Chloe</a>
+</div>
+
+<div class="product">
+<div class="emoji">🛡️</div>
+<span class="badge">Co-Owner & Operations Manager</span>
+<h3>Max</h3>
+<p><strong>Discord:</strong> @shxd3zxw</p>
+<p><strong>Business Email:</strong><br><span style="color:#00ff88">shxd3zxw@gmail.com</span></p>
+<p>Co-owner of Rwttxn Market. Max helps oversee inventory, customer support, order fulfillment, stock updates, and marketplace operations.</p>
+<a href="mailto:shxd3zxw@gmail.com" class="btn btn-dark">📧 Email Max</a>
+</div>
+</div>
+</section>
+
+
+<section id="shop">
+      <h2 class="section-title">Categories</h2>
+      <p class="section-subtitle">Choose a category and add items to cart.</p>
+
+<div style="background:#0d1510;border:1px solid #00ff88;padding:15px;border-radius:15px;margin-bottom:20px;color:#00ff88;font-weight:900;text-align:center;">
+✅ ALL PRICES INCLUDE FEES • NO EXTRA CHARGES AT CHECKOUT
+</div>
+
+      <div class="category-row">
+        <button class="chip" onclick="filterProducts('all')">✨ All</button>
+        <button class="chip" onclick="filterProducts('mm2')">🔪 MM2 Bundles</button>
+        <button class="chip" onclick="filterProducts('adoptme')">🐉 Adopt Me Pets</button>
+        <button class="chip" onclick="filterProducts('dahood')">🎨 Dahood Skins</button>
+        <button class="chip" onclick="filterProducts('dhc')">💸 DHC Prices</button>
+        <button class="chip" onclick="filterProducts('accounts')">👤 OG Roblox Accounts</button>
+        <button class="chip" onclick="filterProducts('robux')">💰 Robux</button>
+      </div>
+
+      <div class="products">
+        <div class="product" data-category="dhc"><span class="badge">Dhc Prices</span><div class="emoji">💵</div><h3>5M DHC</h3><div class="price">$3.00</div><p class="fee-tag">✅ Fees Included</p><p>5 million Da Hood cash</p><button onclick="addToCart('5M DHC', 3)">Add to Cart</button></div>
+        <div class="product" data-category="dhc"><span class="badge">Dhc Prices</span><div class="emoji">💸</div><h3>25M DHC</h3><div class="price">$7.00</div><p class="fee-tag">✅ Fees Included</p><p>25 million Da Hood cash</p><button onclick="addToCart('25M DHC', 7)">Add to Cart</button></div>
+        <div class="product" data-category="dhc"><span class="badge">Dhc Prices</span><div class="emoji">🤑</div><h3>50M DHC</h3><div class="price">$12.00</div><p class="fee-tag">✅ Fees Included</p><p>50 million Da Hood cash</p><button onclick="addToCart('50M DHC', 12)">Add to Cart</button></div>
+        <div class="product" data-category="dhc"><span class="badge">Dhc Prices</span><div class="emoji">🏦</div><h3>75M DHC</h3><div class="price">$17.00</div><p class="fee-tag">✅ Fees Included</p><p>75 million Da Hood cash</p><button onclick="addToCart('75M DHC', 17)">Add to Cart</button></div>
+        <div class="product" data-category="dhc"><span class="badge">Dhc Prices</span><div class="emoji">💰</div><h3>100M DHC</h3><div class="price">$20.00</div><p class="fee-tag">✅ Fees Included</p><p>100 million Da Hood cash</p><button onclick="addToCart('100M DHC', 20)">Add to Cart</button></div>
+
+        <div class="product" data-category="mm2"><span class="badge">MM2 Bundles</span><div class="emoji">⏰</div><h3>Clockwork Bundle</h3><div class="price">$2.35</div><p class="fee-tag">✅ Fees Included</p><p>Clockworks knife + Steambird pet</p><button onclick="addToCart('Clockwork Bundle', 2.35)">Add to Cart</button></div>
+        <div class="product" data-category="mm2"><span class="badge">MM2 Bundles</span><div class="emoji">🤠</div><h3>Vintage Bundle x2</h3><div class="price">$1.80</div><p class="fee-tag">✅ Fees Included</p><p>America gun, Blood knife, Ghost knife, Cowboy gun, Golden gun, Laser gun, Phaser gun, Prince knife, Shadow knife, Splitter knife</p><button onclick="addToCart('Vintage Bundle x2', 1.80)">Add to Cart</button></div>
+        <div class="product" data-category="mm2"><span class="badge">MM2 Bundles</span><div class="emoji">♾️</div><h3>Eternal Bundle</h3><div class="price">$1.70</div><p class="fee-tag">✅ Fees Included</p><p>Eternal, Eternal II, Eternal III, Eternal IV, Eternalcane</p><button onclick="addToCart('Eternal Bundle', 1.70)">Add to Cart</button></div>
+        <div class="product" data-category="mm2"><span class="badge">MM2 Bundles</span><div class="emoji">🎨</div><h3>Painted Seer Bundle</h3><div class="price">$1.55</div><p class="fee-tag">✅ Fees Included</p><p>Orange Seer, Blue Seer, Purple Seer, Yellow Seer, Red Seer</p><button onclick="addToCart('Painted Seer Bundle', 1.55)">Add to Cart</button></div>
+        <div class="product" data-category="mm2"><span class="badge">MM2 Bundles</span><div class="emoji">🌈</div><h3>Chroma Knife Bundle</h3><div class="price">$6.50</div><p class="fee-tag">✅ Fees Included</p><p>Chroma Saw, Tides, Fang, Slasher, Heat, Gingerblade, Boneblade, Gemstone, Seer, Deathshard</p><button onclick="addToCart('Chroma Knife Bundle', 6.50)">Add to Cart</button></div>
+
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🦊</div><h3>NFR Red Fox</h3><div class="price">$13.00</div><p class="fee-tag">✅ Fees Included</p><p>Neon Fly Ride Red Fox</p><button onclick="addToCart('NFR Red Fox', 13)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🐴</div><h3>NR Headless Horse</h3><div class="price">$5.00</div><p class="fee-tag">✅ Fees Included</p><p>Neon Ride Headless Horse</p><button onclick="addToCart('NR Headless Horse', 5)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🦌</div><h3>R Winter Fawn</h3><div class="price">$3.00</div><p class="fee-tag">✅ Fees Included</p><p>Ride Winter Fawn</p><button onclick="addToCart('R Winter Fawn', 3)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🐭</div><h3>N Mouse</h3><div class="price">$2.50</div><p class="fee-tag">✅ Fees Included</p><p>Neon Mouse</p><button onclick="addToCart('N Mouse', 2.50)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🦎</div><h3>N Gummy Guana</h3><div class="price">$2.25</div><p class="fee-tag">✅ Fees Included</p><p>Neon Gummy Guana</p><button onclick="addToCart('N Gummy Guana', 2.25)">Add to Cart</button></div>
+
+        <div class="product" data-category="dahood"><span class="badge">Dahood Skins</span><div class="emoji">🧊</div><h3>Iced Out Knife</h3><div class="price">$24.00</div><p class="fee-tag">✅ Fees Included</p><p>Da Hood skin</p><button onclick="addToCart('Iced Out Knife', 24)">Add to Cart</button></div>
+        <div class="product" data-category="dahood"><span class="badge">Dahood Skins</span><div class="emoji">🔫</div><h3>Pcc Rev</h3><div class="price">$18.00</div><p class="fee-tag">✅ Fees Included</p><p>Da Hood skin</p><button onclick="addToCart('Pcc Rev', 18)">Add to Cart</button></div>
+
+        <div class="product" data-category="robux"><span class="badge">Robux</span><div class="emoji">💰</div><h3>1K Robux</h3><div class="price">$5.00</div><p class="fee-tag">✅ Fees Included</p><p>1,000 Robux</p><button onclick="addToCart('1K Robux', 5)">Add to Cart</button></div>
+        <div class="product" data-category="robux"><span class="badge">Robux</span><div class="emoji">💎</div><h3>5K Robux</h3><div class="price">$23.00</div><p class="fee-tag">✅ Fees Included</p><p>5,000 Robux</p><button onclick="addToCart('5K Robux', 23)">Add to Cart</button></div>
+        <div class="product" data-category="robux"><span class="badge">Robux</span><div class="emoji">👑</div><h3>10K Robux</h3><div class="price">$46.00</div><p class="fee-tag">✅ Fees Included</p><p>10,000 Robux maximum</p><button onclick="addToCart('10K Robux', 46)">Add to Cart</button></div>
+
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🐱</div><h3>Alley Cat</h3><div class="price">$3.50</div><p class="fee-tag">✅ Fees Included</p><p>Adopt Me pet</p><button onclick="addToCart('Alley Cat', 3.50)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🐈</div><h3>FR Munchkin Cat</h3><div class="price">$7.50</div><p class="fee-tag">✅ Fees Included</p><p>Fly Ride Munchkin Cat</p><button onclick="addToCart('FR Munchkin Cat', 7.50)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">❄️</div><h3>MFR Snow Cat</h3><div class="price">$2.75</div><p class="fee-tag">✅ Fees Included</p><p>Mega Fly Ride Snow Cat</p><button onclick="addToCart('MFR Snow Cat', 2.75)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🐪</div><h3>Camel</h3><div class="price">$1.00</div><p class="fee-tag">✅ Fees Included</p><p>Adopt Me camel pet</p><button onclick="addToCart('Camel', 1)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🐲</div><h3>FR Lava Dragon</h3><div class="price">$7.00</div><p class="fee-tag">✅ Fees Included</p><p>Fly Ride Lava Dragon</p><button onclick="addToCart('FR Lava Dragon', 7)">Add to Cart</button></div>
+        <div class="product" data-category="adoptme"><span class="badge">Adopt Me Pets</span><div class="emoji">🐕</div><h3>FR German Shepherd</h3><div class="price">$6.00</div><p class="fee-tag">✅ Fees Included</p><p>Fly Ride German Shepherd</p><button onclick="addToCart('FR German Shepherd', 6)">Add to Cart</button></div>
+
+      </div>
+    </section>
+
+    <section id="accounts">
+      <h2 class="section-title">👤 OG Roblox Accounts</h2>
+      <p class="section-subtitle">✅ All Prices Include Fees • Stock: 2x 2010 Accounts + 1x 2012 Account</p>
+      <div class="products">
+        <div class="product" data-category="accounts">
+          <span class="badge">2010 Account</span>
+          <div class="emoji">⭐</div>
+          <h3>2010 Roblox Account</h3>
+          <div class="price">$14.00</div><p class="fee-tag">✅ Fees Included</p>
+          <p>Original 2010 Roblox account.<br>Stock: 2 Available</p>
+          <button onclick="addToCart('2010 Roblox Account', 14)">Add to Cart</button>
+        </div>
+
+        <div class="product" data-category="accounts">
+          <span class="badge">2012 Account</span>
+          <div class="emoji">💎</div>
+          <h3>2012 Roblox Account</h3>
+          <div class="price">$11.00</div><p class="fee-tag">✅ Fees Included</p>
+          <p>Original 2012 Roblox account.<br>Stock: 1 Available</p>
+          <button onclick="addToCart('2012 Roblox Account', 11)">Add to Cart</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="login">
+      <h2 class="section-title">📧 Email Login / Discounts</h2>
+      <div class="box">
+        <p>Enter your email to get discount codes, sale alerts, and restock updates.</p>
+        <input id="loginEmail" type="email" placeholder="Email address" />
+        <input id="loginName" placeholder="Username or name" />
+        <button class="btn btn-main" onclick="loginUser()" style="margin-top:12px;">Join Discount List</button>
+        <p id="loginMsg" style="color:#00ff88; margin-top:12px;"></p>
+      </div>
+    </section>
+
+
+    <section id="ticket">
+      <h2 class="section-title">🎟️ Need Help?</h2>
+      <div class="ticket-banner">
+        <div>
+          <h3>Open a Discord Ticket</h3>
+          <p class="section-subtitle" style="margin-bottom:0;">Ask questions, confirm stock, or send your order safely through the server.</p>
+        </div>
+        <a class="btn btn-main" href="https://discord.gg/ffYGWywwY" target="_blank">🎟️ Open Ticket</a>
+      </div>
+    </section>
+
+    <section id="cart">
+      <h2 class="section-title">🛒 Your Cart</h2>
+      <div class="box">
+        <div id="cartItems">Your cart is empty.</div>
+        <div class="total">Total: $<span id="total">0.00</span></div><br />
+        <div class="checkout-actions">
+          <button class="btn btn-main" onclick="openCheckout()">💳 Checkout Now</button>
+          <button class="btn btn-dark" onclick="clearCart()">🗑️ Clear Cart</button>
+        </div>
+        <p class="mini-note">✅ Fees Included • No extra charges at checkout</p>
+      </div>
+    </section>
+
+    <section id="payment">
+      <h2 class="section-title">💳 Checkout + Pay</h2>
+      <p class="section-subtitle">✅ All totals already include fees.</p>
+      <div class="box">
+        <input id="buyerName" placeholder="Your name" />
+        <input id="discord" placeholder="Your Discord username" />
+        <select id="paymentMethod"><option>Cash App</option><option>PayPal</option><option>Debit Card</option></select>
+        <textarea id="orderNote" placeholder="What exact item do you want?"></textarea>
+        <button class="btn btn-main" onclick="makeOrder()" style="margin-top:12px;">Create Order Message</button>
+        <textarea id="orderOutput" placeholder="Copy this order message and send it in Discord."></textarea>
+
+        <div class="pay-grid">
+          <div class="pay-card"><h3>💵 Cash App</h3><p>$Teddyzxox</p><a class="btn btn-main" href="https://cash.app/$Teddyzxox" target="_blank">Pay Cash App</a></div>
+          <div class="pay-card"><h3>🅿️ PayPal</h3><p>paypal.me/Teddyzxox</p><a class="btn btn-main" href="https://paypal.me/Teddyzxox" target="_blank">Pay PayPal</a></div>
+          <div class="pay-card"><h3>💳 Debit Card</h3><p>Card checkout preview below.</p><a class="btn btn-dark" href="#cardCheckout">Card Checkout</a></div>
+        </div>
+
+        <div id="cardCheckout" class="box" style="margin-top:18px; ">
+          <h2 style="margin-bottom:16px; font-weight:500;">Pay with card</h2>
+          <label>Email</label>
+          <input style="" placeholder="your@email.com" />
+
+          <h3 style="margin-top:22px; margin-bottom:10px; font-weight:500;">Payment method</h3>
+          <div style=" border-radius:10px; padding:16px;">
+            <strong>💳 Card</strong>
+            <p style="margin-top:15px; color:#333;">Card information</p>
+            <input style="" placeholder="1234 1234 1234 1234" />
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+              <input style=" border-radius:14px 0 0 14px;" placeholder="MM / YY" />
+              <input style=" border-radius:0 14px 14px 0;" placeholder="CVC" />
+            </div>
+            <p style="margin-top:15px; color:#333;">Cardholder name</p>
+            <input style="" placeholder="Name on card" />
+            <p style="margin-top:15px; color:#333;">Billing address</p>
+            <select style=""><option>United States</option></select>
+            <input style="" placeholder="Address" />
+          </div>
+          <label style="display:flex; gap:10px; margin-top:18px; line-height:1.4; color:#333;"><input type="checkbox" style="width:auto; margin-top:2px;" /> I agree to the purchase terms and understand this is a demo checkout box.</label>
+          <a class="btn btn-main" href="https://discord.gg/ffYGWywwY" target="_blank" style="width:100%; margin-top:18px;">Continue Card Payment</a>
+          <p style="color:#666; font-size:13px; margin-top:12px;">For real card payments, connect a real processor like Stripe or PayPal Checkout. This website should not save card numbers by itself.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <div id="checkoutModal" class="checkout-modal">
+      <div class="checkout-panel">
+        <div class="checkout-top">
+          <h2>💳 Checkout</h2>
+          <button class="close-btn" onclick="closeCheckout()">✕ Close</button>
+        </div>
+
+        <p class="mini-note">✅ All prices include fees. No extra charges.</p>
+        <div id="checkoutItems" class="checkout-list">Your cart is empty.</div>
+        <div class="total">Total: $<span id="checkoutTotal">0.00</span></div>
+
+        <input id="popupBuyerName" placeholder="Your name" />
+        <input id="popupDiscord" placeholder="Your Discord username" />
+        <input id="popupEmail" type="email" placeholder="Email for receipt/discounts" />
+        <select id="popupPaymentMethod">
+          <option>Cash App</option>
+          <option>PayPal</option>
+          <option>Debit Card</option>
+        </select>
+        <textarea id="popupOrderNote" placeholder="Any item details or questions?"></textarea>
+
+        <button class="btn btn-main" onclick="createPopupOrder()" style="margin-top:12px;width:100%;">Create Order</button>
+        <textarea id="popupOrderOutput" placeholder="Your full order message will appear here. Copy it and send it in Discord."></textarea>
+
+        <div class="pay-grid">
+          <div class="pay-card"><h3>💵 Cash App</h3><p>$Teddyzxox</p><a class="btn btn-main" href="https://cash.app/$Teddyzxox" target="_blank">Pay Cash App</a></div>
+          <div class="pay-card"><h3>🅿️ PayPal</h3><p>paypal.me/Teddyzxox</p><a class="btn btn-main" href="https://paypal.me/Teddyzxox" target="_blank">Pay PayPal</a></div>
+          <div class="pay-card"><h3>💳 Debit Card</h3><p>Use PayPal checkout or Discord.</p><a class="btn btn-dark" href="https://discord.gg/ffYGWywwY" target="_blank">Pay With Card</a></div>
+        </div>
+
+        <a class="btn btn-dark" href="https://discord.gg/ffYGWywwY" target="_blank" style="width:100%; margin-top:15px;">💬 Send Order In Discord</a>
+      </div>
+    </div>
+
+
+    <section id="recentlySold">
+      <h2 class="section-title">📦 Recently Sold</h2>
+      <p class="section-subtitle">Recent marketplace activity from buyers.</p>
+      <div class="recently-sold">
+        <div class="sold-card"><h3>🌈 Chroma Knife Bundle</h3><p>Sold 2 minutes ago • Fees Included ✅</p></div>
+        <div class="sold-card"><h3>💵 25M DHC</h3><p>Sold 8 minutes ago • Fees Included ✅</p></div>
+        <div class="sold-card"><h3>🦊 NFR Red Fox</h3><p>Sold 16 minutes ago • Fees Included ✅</p></div>
+        <div class="sold-card"><h3>⭐ 2010 Roblox Account</h3><p>Sold today • Fees Included ✅</p></div>
+      </div>
+    </section>
+
+    <section id="reviews">
+      <h2 class="section-title">⭐ Reviews</h2>
+      <div class="review-counter">
+        <h3 id="liveReviewCount">127+</h3>
+        <p>Live buyer reviews and counting</p>
+      </div>
+      <div class="reviews">
+        <div class="review"><h3>⭐️⭐️⭐️⭐️⭐️</h3><p>“Fast delivery and super easy to order. I got my items quick.”</p></div>
+        <div class="review"><h3>⭐️⭐️⭐️⭐️⭐️</h3><p>“Good prices and trusted seller. The Discord helped a lot.”</p></div>
+        <div class="review"><h3>⭐️⭐️⭐️⭐️⭐️</h3><p>“Bought DHC and everything went smooth. Would buy again.”</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 Rwttxn Market. Join Discord: https://discord.gg/ffYGWywwY — Not affiliated with Roblox.</footer>
+
+  
+<script>
+    let cart = [];
+    let total = 0;
+
+    function filterProducts(category) {
+      document.querySelectorAll('.chip').forEach(chip => chip.classList.remove('active'));
+      event?.target?.classList?.add('active');
+      const products = document.querySelectorAll('.product');
+      products.forEach(product => {
+        if (category === 'all' || product.dataset.category === category) {
+          product.style.display = 'block';
+        } else {
+          product.style.display = 'none';
+        }
+      });
+      document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function addToCart(item, price) {
+      cart.push({ item, price });
+      total += price;
+      updateCart();
+      document.getElementById('cart').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function updateCart() {
+      const cartText = cart.length
+        ? cart.map((p, index) => `• ${p.item} - $${p.price.toFixed(2)} <button onclick="removeItem(${index})" style="margin-left:8px;border:none;border-radius:8px;padding:4px 8px;cursor:pointer;">Remove</button>`).join('<br>')
+        : 'Your cart is empty.';
+
+      document.getElementById('cartItems').innerHTML = cartText;
+      document.getElementById('total').textContent = total.toFixed(2);
+
+      const cartCount = document.getElementById('cartCount');
+      if (cartCount) cartCount.textContent = cart.length;
+
+      updateCheckoutPreview();
+    }
+
+    function updateCheckoutPreview() {
+      const checkoutItems = document.getElementById('checkoutItems');
+      const checkoutTotal = document.getElementById('checkoutTotal');
+
+      if (checkoutItems) {
+        checkoutItems.innerHTML = cart.length
+          ? cart.map(p => `• ${p.item} - $${p.price.toFixed(2)}`).join('<br>')
+          : 'Your cart is empty.';
+      }
+
+      if (checkoutTotal) checkoutTotal.textContent = total.toFixed(2);
+    }
+
+    function removeItem(index) {
+      total -= cart[index].price;
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    function clearCart() {
+      cart = [];
+      total = 0;
+      updateCart();
+    }
+
+    function openCheckout() {
+      if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
+
+      updateCheckoutPreview();
+      document.getElementById('checkoutModal').style.display = 'block';
+      createPopupOrder();
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkoutModal').style.display = 'none';
+    }
+
+    function loginUser() {
+      const email = document.getElementById('loginEmail').value;
+      const name = document.getElementById('loginName').value;
+      document.getElementById('loginMsg').textContent = email ? `✅ ${name || email} joined the discount list.` : 'Please enter your email.';
+    }
+
+    function makeOrder() {
+      const name = document.getElementById('buyerName').value;
+      const discord = document.getElementById('discord').value;
+      const payment = document.getElementById('paymentMethod').value;
+      const note = document.getElementById('orderNote').value;
+      const cartText = cart.length ? cart.map(p => `${p.item} - $${p.price.toFixed(2)}`).join('\n') : 'No items selected';
+      document.getElementById('orderOutput').value = `New Rwttxn Market Order\n\nName: ${name}\nDiscord: ${discord}\nPayment: ${payment}\n\nItems:\n${cartText}\n\nTotal: $${total.toFixed(2)}\nFees: Included ✅\n\nNote: ${note}\n\nDiscord Server: https://discord.gg/ffYGWywwY`;
+    }
+
+    function createPopupOrder() {
+      const name = document.getElementById('popupBuyerName').value;
+      const discord = document.getElementById('popupDiscord').value;
+      const email = document.getElementById('popupEmail').value;
+      const payment = document.getElementById('popupPaymentMethod').value;
+      const note = document.getElementById('popupOrderNote').value;
+      const cartText = cart.length ? cart.map(p => `${p.item} - $${p.price.toFixed(2)}`).join('\n') : 'No items selected';
+
+      document.getElementById('popupOrderOutput').value =
+        `New Rwttxn Market Order\n\nName: ${name}\nDiscord: ${discord}\nEmail: ${email}\nPayment: ${payment}\n\nItems:\n${cartText}\n\nTotal: $${total.toFixed(2)}\nFees: Included ✅\n\nNote: ${note}\n\nDiscord Server: https://discord.gg/ffYGWywwY`;
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('checkoutModal');
+      if (event.target === modal) closeCheckout();
+    };
+
+    const saleMessages = [
+      '🎉 <strong>User purchased Chroma Bundle</strong><br>2 minutes ago • Fees Included ✅',
+      '📦 <strong>User purchased 25M DHC</strong><br>8 minutes ago • Fees Included ✅',
+      '⭐ <strong>User purchased 2010 Account</strong><br>Today • Fees Included ✅',
+      '🐉 <strong>User purchased Adopt Me Pet</strong><br>16 minutes ago • Fees Included ✅'
+    ];
+    let saleIndex = 0;
+    setInterval(() => {
+      const box = document.getElementById('floatingSale');
+      if (!box) return;
+      saleIndex = (saleIndex + 1) % saleMessages.length;
+      box.innerHTML = '<p>' + saleMessages[saleIndex] + '</p>';
+    }, 8000);
+
+    let reviewCount = 127;
+    setInterval(() => {
+      const count = document.getElementById('liveReviewCount');
+      if (!count) return;
+      reviewCount += 1;
+      count.textContent = reviewCount + '+';
+    }, 18000);
+
+  </script>
+
+  <div class="floating-sale" id="floatingSale">
+    <p>🎉 <strong>User purchased Chroma Bundle</strong><br>2 minutes ago • Fees Included ✅</p>
+  </div>
+
+
+<script>
+  document.addEventListener('mousemove', function(e) {
+    document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+    document.documentElement.style.setProperty('--my', e.clientY + 'px');
+  });
+</script>
+
+</body>
+</html>
